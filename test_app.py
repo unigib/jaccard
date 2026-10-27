@@ -73,6 +73,69 @@ class JaccardAlgorithmTests(unittest.TestCase):
         )
         self.assertEqual(len(comparisons), 2)
 
+    def test_comparison_reuses_cached_reference_trigrams(self):
+        with TemporaryDirectory() as temp_dir:
+            corpus = Path(temp_dir)
+            (corpus / "reference.txt").write_text(
+                "A reference text used to verify cached trigram indexing.",
+                encoding="utf-8",
+            )
+            cache = {}
+            first_phases = []
+            second_phases = []
+            query = "A reference text used to verify cached trigram indexing."
+
+            first = compare_to_corpus(
+                query,
+                corpus,
+                on_phase=lambda phase, position, total, detail: first_phases.append(
+                    (phase, detail)
+                ),
+                trigram_cache=cache,
+            )
+            second = compare_to_corpus(
+                query,
+                corpus,
+                on_phase=lambda phase, position, total, detail: second_phases.append(
+                    (phase, detail)
+                ),
+                trigram_cache=cache,
+            )
+
+        self.assertEqual(first, second)
+        self.assertTrue(any("Indexing 1 of 1" in detail for _, detail in first_phases))
+        self.assertTrue(
+            any("Using cached trigrams 1 of 1" in detail for _, detail in second_phases)
+        )
+
+    def test_comparison_reindexes_reference_when_file_changes(self):
+        with TemporaryDirectory() as temp_dir:
+            corpus = Path(temp_dir)
+            reference = corpus / "reference.txt"
+            reference.write_text(
+                "Old reference text has a few words.", encoding="utf-8"
+            )
+            cache = {}
+            compare_to_corpus(
+                "Old reference text has a few words.",
+                corpus,
+                trigram_cache=cache,
+            )
+
+            reference.write_text(
+                "Completely different updated reference phrases.", encoding="utf-8"
+            )
+            phases = []
+            updated = compare_to_corpus(
+                "Completely different updated reference phrases.",
+                corpus,
+                on_phase=lambda phase, position, total, detail: phases.append(detail),
+                trigram_cache=cache,
+            )
+
+        self.assertAlmostEqual(updated[0].score, 100.0)
+        self.assertTrue(any("Indexing 1 of 1" in detail for detail in phases))
+
     def test_demo_inputs_cover_original_and_suspect_results(self):
         original_text = (PROJECT_DIR / "demo_inputs" / "original.txt").read_text(
             encoding="utf-8"

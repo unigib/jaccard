@@ -65,10 +65,10 @@ def compare_to_corpus(
 ) -> list[Comparison]:
     """Compare text against every UTF-8 .txt file in the corpus."""
     if on_phase is not None:
-        on_phase("Phase 1/4 — Normalizing submitted document", 0, 1, "")
+        on_phase("Phase 1/4 — Normalizing submitted document", 1, 1, "")
     normalized_text = normalize_text(text)
     if on_phase is not None:
-        on_phase("Phase 2/4 — Creating submitted trigrams", 0, 1, "")
+        on_phase("Phase 2/4 — Creating submitted trigrams", 1, 1, "")
     query_trigrams = _ngrams_from_normalized(normalized_text, TRIGRAM_SIZE)
     if not query_trigrams:
         raise ValueError("Enter at least three words to create a trigram.")
@@ -444,15 +444,15 @@ class JaccardApp(tk.Tk):
         try:
             comparisons = compare_to_corpus(
                 text,
-                on_progress=lambda position, total, filename: self._events.put(
-                    ("progress", position, total, filename)
-                ),
                 on_phase=lambda phase, position, total, detail: self._events.put(
                     ("phase", phase, position, total, detail)
                 ),
                 trigram_cache=self._trigram_cache,
             )
-        except (OSError, UnicodeError, ValueError) as error:
+        except ValueError as error:
+            self._events.put(("input_error", str(error)))
+            return
+        except (OSError, UnicodeError) as error:
             self._events.put(("error", str(error)))
             return
         self._events.put(("complete", comparisons, threshold))
@@ -495,6 +495,14 @@ class JaccardApp(tk.Tk):
                     text="Check could not be completed.",
                     bg="#fee2e2",
                     fg="#991b1b",
+                )
+            elif event[0] == "input_error":
+                self._finish_check()
+                messagebox.showwarning("Check the input", event[1], parent=self)
+                self.status.configure(
+                    text="Check could not be completed.",
+                    bg="#e2e8f0",
+                    fg="#334155",
                 )
             elif event[0] == "complete":
                 _, comparisons, threshold = event

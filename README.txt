@@ -29,6 +29,12 @@ The comparison uses sets, so repeated occurrences of the same trigram count
 once. Similarity is based on overlap with each whole reference document, not a
 claim that the source of matching text has been established.
 
+During a check, the app reports four phases: normalizing the submission,
+creating its trigrams, preparing reference trigrams, and calculating scores.
+Reference trigrams are cached in memory for the current app session; changing
+or adding corpus files is detected for the next check. The first check indexes
+the corpus, while subsequent checks reuse the prepared data.
+
 Demo inputs
 -----------
 Use demo_inputs/original.txt for a low-overlap example and
