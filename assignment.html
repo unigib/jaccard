@@ -1,0 +1,84 @@
+<div class="canvas-assignment-container" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #2d3b45; max-width: 920px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #0f766e; color: #ffffff; padding: 24px 28px; border-radius: 8px; margin-bottom: 24px; border-left: 8px solid #14b8a6;">
+        <h1 style="margin: 0 0 8px 0; font-size: 24px; color: #ffffff;">Assignment: Document Plagiarism Checker App</h1>
+        <p style="margin: 0; font-size: 15px;">Introduction to Algorithms | Implementation: Python (Tkinter or Flask) + AI Coding Assistant</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px;">
+        <div style="background: #f8fafc; padding: 12px 14px; border-radius: 6px; border: 1px solid #e2e8f0;"><strong style="color: #64748b; display: block; font-size: 11px;">Core Algorithm</strong> <span style="font-size: 14px;">N-Grams &amp; Jaccard Set Similarity</span></div>
+        <div style="background: #f8fafc; padding: 12px 14px; border-radius: 6px; border: 1px solid #e2e8f0;"><strong style="color: #64748b; display: block; font-size: 11px;">UI Framework</strong> <span style="font-size: 14px;">Tkinter Desktop or Flask Web</span></div>
+        <div style="background: #f8fafc; padding: 12px 14px; border-radius: 6px; border: 1px solid #e2e8f0;"><strong style="color: #64748b; display: block; font-size: 11px;">AI Usage</strong> <span style="font-size: 14px; color: #047857;">Allowed (Gemini / ChatGPT)</span></div>
+    </div>
+    <section style="margin-bottom: 28px;">
+        <h2 style="font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #0f172a;">1. The Problem</h2>
+        <p>How do tools like Turnitin decide if a student's essay copied someone else's work? Checking for 100% word-for-word identical documents is too easy to beat (changing just one word fools a direct match). Instead, plagiarism engines look for <strong>overlapping sequences of words</strong>.</p>
+        <p>Your goal is to build an application that scans an incoming document against a folder of existing articles and flags whether the text is suspicious, along with an overall similarity percentage.</p>
+    </section>
+    <section style="margin-bottom: 28px;">
+        <h2 style="font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #0f172a;">2. The Algorithm Explained (Step-by-Step)</h2>
+        <p>You can generate this logic using Gemini or any LLM, but you must understand every stage:</p>
+        <div style="background-color: #ffffff; border-radius: 6px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #cbd5e1;"><strong style="color: #0f766e; font-size: 15px;">Step A: Text Normalization (Cleaning)</strong>
+            <p style="margin: 6px 0 0 0; font-size: 14px;">Strip out punctuation and convert all text to lowercase so capitalization and commas don't fool your detector.</p>
+        </div>
+        <div style="background-color: #ffffff; border-radius: 6px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #cbd5e1;"><strong style="color: #0f766e; font-size: 15px;">Step B: Word N-Grams (Chunking)</strong>
+            <p style="margin: 6px 0 0 0; font-size: 14px;">Break text into sliding sequences of <em>N</em> consecutive words (usually <em>N</em> = 3, called "trigrams").</p>
+            <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-size: 13px; margin-top: 8px;">"The quick brown fox jumps" &rarr; {"the quick brown", "quick brown fox", "brown fox jumps"}</div>
+        </div>
+        <div style="background-color: #ffffff; border-radius: 6px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #cbd5e1;"><strong style="color: #0f766e; font-size: 15px;">Step C: Jaccard Similarity Calculation</strong>
+            <p style="margin: 6px 0 0 0; font-size: 14px;">Compare the set of chunks in Document A with the set in Document B using set intersection and union:</p>
+            <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 4px; font-family: monospace; font-size: 13px; margin-top: 8px;">Similarity = (Shared Chunks) / (Total Unique Chunks in Both) &times; 100%</div>
+            <p style="margin: 8px 0 0 0; font-size: 13px; color: #475569;">If similarity is greater than 30% (or your chosen threshold), flag the document as <strong>Potential Plagiarism</strong>.</p>
+        </div>
+    </section>
+    <section style="margin-bottom: 28px;">
+        <h2 style="font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #0f172a;">3. What Your App Needs to Do</h2>
+        <ul style="font-size: 14px; line-height: 1.8; margin-left: 20px;">
+            <li><strong>Database/Folder of References:</strong> A <code>/corpus</code> folder with at least 5 plain text files (e.g., sample articles, encyclopedia paragraphs, or sample essays).</li>
+            <li><strong>Input Interface:</strong> A clean Tkinter window or web page (Flask) with a large text box where a user can paste a paragraph or load a file.</li>
+            <li><strong>Run Check Button:</strong> Compares the pasted text against all files in the reference folder.</li>
+            <li><strong>Clear Results Display:</strong>
+                <ul>
+                    <li>Show which document had the highest match.</li>
+                    <li>Display the Similarity Score (e.g., "42% Match with article_2.txt").</li>
+                    <li>Display a clear Status Badge: <span style="background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px;">Original</span> or <span style="background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px;">Suspect Plagiarism</span>.</li>
+                    <li>Bonus: Highlight or list the exact 3-word phrases that were copied.</li>
+                </ul>
+            </li>
+        </ul>
+    </section>
+    <section style="margin-bottom: 28px;">
+        <h2 style="font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #0f172a;">4. How to Use AI (Gemini / ChatGPT) for this Task</h2>
+        <p style="font-size: 14px;">Do not just ask the AI: <em>"Build me a plagiarism app."</em> The output will be messy and hard to debug. Instead, break it into 3 targeted prompts:</p>
+        <div style="background-color: #f8fafc; border-radius: 6px; padding: 14px; margin-bottom: 10px; font-size: 13px; border: 1px solid #cbd5e1;"><strong>Prompt 1 (The Algorithm):</strong><br /><em style="color: #0369a1;">"Write a Python function that takes two strings, cleans them, breaks them into 3-word n-grams, and calculates their Jaccard similarity percentage using Python sets."</em></div>
+        <div style="background-color: #f8fafc; border-radius: 6px; padding: 14px; margin-bottom: 10px; font-size: 13px; border: 1px solid #cbd5e1;"><strong>Prompt 2 (The Multi-file Scanner):</strong><br /><em style="color: #0369a1;">"Write a function that takes a query text string and compares it against all .txt files inside a folder called 'corpus', returning the filename and percentage of the highest match."</em></div>
+        <div style="background-color: #f8fafc; border-radius: 6px; padding: 14px; margin-bottom: 10px; font-size: 13px; border: 1px solid #cbd5e1;"><strong>Prompt 3 (The UI):</strong><br /><em style="color: #0369a1;">"Wrap this logic in a simple [Tkinter / Flask] interface that has a text input box, a 'Check Plagiarism' button, and displays the result with a red or green alert."</em></div>
+    </section>
+    <section style="margin-bottom: 28px;">
+        <h2 style="font-size: 18px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; color: #0f172a;">5. Deliverables &amp; Grading</h2>
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; margin-top: 10px;">
+            <thead>
+                <tr style="background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                    <th style="padding: 10px;">Item</th>
+                    <th style="padding: 10px; width: 80px;">Points</th>
+                    <th style="padding: 10px;">Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px;">Working App (Code)</td>
+                    <td style="padding: 10px;">50 pts</td>
+                    <td style="padding: 10px;">Python script launches cleanly, loads corpus files, computes similarity scores accurately, and flags suspect documents.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px;">Corpus &amp; Test Cases</td>
+                    <td style="padding: 10px;">25 pts</td>
+                    <td style="padding: 10px;">Includes a <code>corpus/</code> folder with sample documents, plus 2 demo test inputs: one that is clearly original and one altered to trigger a plagiarism warning.</td>
+                </tr>
+                <tr style="border-bottom: 1px solid #e2e8f0;">
+                    <td style="padding: 10px;">AI Reflection Report (1 Page)</td>
+                    <td style="padding: 10px;">25 pts</td>
+                    <td style="padding: 10px;">A short <code>README.txt</code> answering: What prompts did you use? What did the AI get wrong or need fixing? What happens if someone changes <em>N</em> from 3 to 1 or 10?</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
