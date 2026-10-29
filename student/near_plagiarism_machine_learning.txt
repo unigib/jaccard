@@ -1,0 +1,1 @@
+Supervised machine learning algorithms use labeled datasets to train predictive models. During training optimization, the algorithm tunes internal weights using gradient descent to minimize the loss function, striving to generalize effectively on unseen evaluation data without overfitting.

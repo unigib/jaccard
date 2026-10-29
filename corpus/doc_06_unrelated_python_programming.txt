@@ -1,0 +1,1 @@
+Python is a high-level, interpreted programming language widely appreciated for readable syntax and extensive libraries. Developers utilize sets and tokenization techniques to compute similarity metrics like Jaccard coefficients between pairs of text documents.

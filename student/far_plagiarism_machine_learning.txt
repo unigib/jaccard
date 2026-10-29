@@ -1,0 +1,1 @@
+When designing automated statistical classifiers, engineers provide input features alongside ground-truth targets. The underlying system iteratively penalizes erroneous outputs, calibrating internal numerical parameters so future inputs from real-world scenarios yield accurate inferences rather than merely memorizing prior examples.
